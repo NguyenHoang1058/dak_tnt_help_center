@@ -22,7 +22,11 @@ interface UserProfile {
   status: 'Verified' | 'Pending' | 'Unverified';
 }
 
-const Profile: React.FC = () => {
+interface ProfileProps {
+  onLogout: () => void;
+}
+
+const Profile: React.FC<ProfileProps> = ({ onLogout }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [tempProfile, setTempProfile] = useState<UserProfile | null>(null);
@@ -90,14 +94,29 @@ const Profile: React.FC = () => {
     setTimeout(() => setAlert(null), 5000);
   };
 
+  const handleLogoutClick = () => {
+    if (window.confirm('Bạn có chắc chắn muốn đăng xuất khỏi hệ thống?')) {
+      onLogout();
+    }
+  };
+
   if (!profile || !tempProfile) return <div className="p-8 text-[#848e9c]">Đang tải...</div>;
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
       {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Thông tin tài khoản</h1>
-        <p className="text-[#848e9c]">Quản lý thông tin cá nhân và trạng thái xác thực danh tính (KYC).</p>
+      <div className="flex justify-between items-start mb-8">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Thông tin tài khoản</h1>
+          <p className="text-[#848e9c]">Quản lý thông tin cá nhân và trạng thái xác thực danh tính (KYC).</p>
+        </div>
+        <button 
+          onClick={handleLogoutClick}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#f6465d]/10 text-[#f6465d] border border-[#f6465d]/20 hover:bg-[#f6465d] hover:text-white transition-all font-bold text-sm"
+        >
+          <i className="bi bi-box-arrow-right"></i>
+          Đăng xuất
+        </button>
       </div>
 
       {/* Alert Notification */}
@@ -315,7 +334,7 @@ const Profile: React.FC = () => {
       </div>
 
       {/* Identity Documents Card */}
-      <div className="bg-[#1e2329] border border-[#2b3139] rounded-xl overflow-hidden">
+      <div className="bg-[#1e2329] border border-[#2b3139] rounded-xl overflow-hidden shadow-xl">
         <div className="px-6 py-4 bg-[#2b3139] border-b border-[#2b3139] flex items-center gap-2 font-bold">
           <i className="bi bi-file-earmark-text-fill text-[#f0b90b]"></i>
           Tài liệu định danh
