@@ -1,0 +1,16 @@
+dak-tnt-monolith/
+├── client/                 # (Di chuyển toàn bộ code React hiện tại vào đây)
+│   ├── src/
+│   │   ├── api/            # (MỚI: Gọi API xuống backend thay vì localStorage)
+│   │   └── components/     # (Code UI cũ: Wallet.tsx, Trading.tsx...)
+├── server/                 # (MỚI: Backend Monolithic Application Server)
+│   ├── src/
+│   │   ├── controllers/    # (Presentation Layer: Xử lý request từ UI)
+│   │   ├── services/       # (Business Logic Layer: Xử lý nghiệp vụ)
+│   │   ├── repositories/   # (Data Access Layer: Tương tác DB)
+│   │   ├── models/         # (Prisma schema definitions)
+│   │   ├── utils/          # (External Services: AI, Email, Market Data)
+│   │   └── app.ts          # (Entry point)
+│   ├── prisma/             # (Database config)
+│   └── package.json
+└── package.json
