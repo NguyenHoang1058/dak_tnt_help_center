@@ -11,6 +11,8 @@ import TransactionHistory from './components/TransactionHistory';
 import Portfolio from './components/Portfolio';
 import Trading from './components/Trading';
 import Auth from './components/Auth';
+import Chatbot from './components/Chatbot';
+import AIAdvisor from './components/AIAdvisor';
 import { MainView } from './types';
 
 const App: React.FC = () => {
@@ -54,6 +56,10 @@ const App: React.FC = () => {
         return <Portfolio />;
       case MainView.TRADING:
         return <Trading />;
+      case MainView.CHATBOT:
+        return <Chatbot />;
+      case MainView.AI_ADVISOR:
+        return <AIAdvisor />;
       case MainView.DASHBOARD:
       default:
         return <Dashboard />;
@@ -71,8 +77,9 @@ const App: React.FC = () => {
         <Topbar 
           onHelpClick={() => setShowHelp(true)} 
           onProfileClick={() => setCurrentView(MainView.PROFILE)} 
+          onLogout={handleLogout}
         />
-        <main className="mt-[70px] p-4 flex-1 overflow-x-hidden">
+        <main className="mt-[70px] p-4 flex-1 overflow-x-hidden flex flex-col">
           {renderMainContent()}
         </main>
       </div>

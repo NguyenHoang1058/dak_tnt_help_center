@@ -17,7 +17,8 @@ export enum MainView {
   AI_ADVISOR = 'AI Advisor',
   WALLET = 'Ví',
   PROFILE = 'Hồ sơ',
-  HISTORY = 'Lịch sử'
+  HISTORY = 'Lịch sử',
+  CHATBOT = 'Trợ lý AI'
 }
 
 export type OrderSide = 'BUY' | 'SELL';

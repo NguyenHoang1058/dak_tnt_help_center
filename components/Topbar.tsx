@@ -5,6 +5,7 @@ import { ICONS, COLORS } from '../constants';
 interface TopbarProps {
   onHelpClick: () => void;
   onProfileClick: () => void;
+  onLogout: () => void;
 }
 
 interface Notification {
@@ -15,9 +16,11 @@ interface Notification {
   isRead: boolean;
 }
 
-const Topbar: React.FC<TopbarProps> = ({ onHelpClick, onProfileClick }) => {
+const Topbar: React.FC<TopbarProps> = ({ onHelpClick, onProfileClick, onLogout }) => {
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
 
   const notifications: Notification[] = [
     { id: '1', title: 'Danh mục của bạn vừa tăng 2.5% nhờ VNM 🚀', time: '5 phút trước', type: 'market', isRead: false },
@@ -35,10 +38,19 @@ const Topbar: React.FC<TopbarProps> = ({ onHelpClick, onProfileClick }) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShowNotifications(false);
       }
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setShowProfileMenu(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const handleLogoutClick = () => {
+    if (window.confirm('Bạn có chắc chắn muốn đăng xuất?')) {
+      onLogout();
+    }
+  };
 
   return (
     <header className="fixed top-0 right-0 left-[260px] h-[70px] bg-[#1e2329]/95 backdrop-blur-md border-b border-[#2b3139] flex items-center justify-between px-8 z-[999]">
@@ -98,13 +110,44 @@ const Topbar: React.FC<TopbarProps> = ({ onHelpClick, onProfileClick }) => {
           )}
         </div>
 
-        {/* User Profile */}
-        <div 
-          onClick={onProfileClick}
-          className="w-10 h-10 rounded-full bg-gradient-to-br from-[#f0b90b] to-[#ffd700] text-[#0b0e11] flex items-center justify-center font-bold cursor-pointer transition-transform hover:scale-110 active:scale-95 shadow-lg"
-          title="Hồ sơ cá nhân"
-        >
-          NA
+        {/* User Profile Avatar & Menu */}
+        <div className="relative" ref={profileRef}>
+          <div 
+            onClick={() => setShowProfileMenu(!showProfileMenu)}
+            className={`w-10 h-10 rounded-full bg-gradient-to-br from-[#f0b90b] to-[#ffd700] text-[#0b0e11] flex items-center justify-center font-bold cursor-pointer transition-transform hover:scale-110 active:scale-95 shadow-lg ${showProfileMenu ? 'ring-2 ring-[#f0b90b] ring-offset-2 ring-offset-[#1e2329]' : ''}`}
+            title="Tài khoản"
+          >
+            NA
+          </div>
+
+          {/* Profile Dropdown Panel */}
+          {showProfileMenu && (
+            <div className="absolute right-0 mt-3 w-56 bg-[#1e2329] border border-[#2b3139] rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 origin-top-right">
+              <div className="p-4 border-b border-[#2b3139] bg-[#2b3139]/30">
+                <p className="text-sm font-bold">Nguyễn Văn A</p>
+                <p className="text-xs text-[#848e9c]">vna.nguyen@example.com</p>
+              </div>
+              <div className="py-2">
+                <button 
+                  onClick={() => {
+                    onProfileClick();
+                    setShowProfileMenu(false);
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#eaecef] hover:bg-[#2b3139] transition-colors text-left"
+                >
+                  <i className="bi bi-person-circle text-[#f0b90b]"></i>
+                  <span>Thông tin tài khoản</span>
+                </button>
+                <button 
+                  onClick={handleLogoutClick}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#f6465d] hover:bg-[#f6465d]/10 transition-colors text-left"
+                >
+                  <i className="bi bi-box-arrow-right"></i>
+                  <span>Đăng xuất</span>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>

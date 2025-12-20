@@ -12,12 +12,12 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onNavigate }) => {
   const menuItems = [
     { icon: 'bi-speedometer2', label: MainView.DASHBOARD },
     { icon: 'bi-rss-fill', label: MainView.FEED },
+    { icon: 'bi-chat-right-dots-fill', label: MainView.CHATBOT },
     { icon: 'bi-arrow-left-right', label: MainView.TRADING },
     { icon: 'bi-briefcase-fill', label: MainView.PORTFOLIO },
     { icon: 'bi-clock-history', label: MainView.HISTORY },
     { icon: 'bi-stars', label: MainView.AI_ADVISOR },
     { icon: 'bi-wallet-fill', label: MainView.WALLET },
-    { icon: 'bi-person-circle', label: MainView.PROFILE },
   ];
 
   return (
