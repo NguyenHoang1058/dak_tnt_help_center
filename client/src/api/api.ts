@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { AIController } from '../../../server/src/controllers/AIController';
 
 const api = axios.create({
     baseURL: 'http://localhost:3000/api', // Server on 3000
@@ -11,9 +10,7 @@ export const tradeApi = {
     getWallet: () => api.get('/wallet'),
 };
 
-export const aiAi = {
-    getAdvice: () => api.post('/ai/analyze'),
+export const aiApi = {
+    getAdvice: (portfolio: any) => api.post('/ai/analyze', { portfolio }),
+    chat: (message: string, history: any[]) => api.post('/ai/chat', { message, history }),
 };
-
-api.post('/api/ai/chat', AIController.chat);
-api.post('/api/ai/analyze', AIController.analyze)

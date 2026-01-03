@@ -1,8 +1,12 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { GoogleGenAI } from '@google/genai';
-import { TradeTransaction, PortfolioPosition } from '../../types';
+import { TradeTransaction, MainView } from '../../types';
 import { COLORS } from '../../constants';
+
+interface AIAdvisorProps {
+  onNavigate?: (view: MainView) => void;
+}
 
 const MOCK_TRADES: TradeTransaction[] = [
   { id: 'TX772188201', time: '2024-05-18 10:15:32', symbol: 'VNM', type: 'BUY', side: 'Lệnh thị trường', price: 72400, quantity: 100, total: 7240000, fee: 7240, status: 'Filled' },
@@ -11,7 +15,7 @@ const MOCK_TRADES: TradeTransaction[] = [
   { id: 'TX772188204', time: '2024-05-16 09:35:12', symbol: 'HPG', type: 'SELL', side: 'Lệnh thị trường', price: 28150, quantity: 1000, total: 28150000, fee: 28150, status: 'Filled' },
 ];
 
-const AIAdvisor: React.FC = () => {
+const AIAdvisor: React.FC<AIAdvisorProps> = ({ onNavigate }) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
 
@@ -19,14 +23,11 @@ const AIAdvisor: React.FC = () => {
   const profileStats = useMemo(() => {
     const buyTrades = MOCK_TRADES.filter(t => t.type === 'BUY').length;
     const sellTrades = MOCK_TRADES.filter(t => t.type === 'SELL').length;
-    const avgTradeValue = MOCK_TRADES.reduce((sum, t) => sum + t.total, 0) / MOCK_TRADES.length;
     
-    // Logic xác định phong cách: nếu bán nhanh sau khi mua -> Short-term
-    // Ở đây ta giả định dựa trên số lượng lệnh trong thời gian ngắn
     const appetite = buyTrades + sellTrades > 3 ? 'Aggressive (Tấn công)' : 'Conservative (Phòng thủ)';
-    const horizon = buyTrades / (sellTrades || 1) > 1.5 ? 'Mid to Long-term' : 'Short-term / Swing';
+    const horizon = buyTrades / (sellTrades || 1) > 1.5 ? 'Trung và dài hạn' : 'Ngắn hạn / Swing';
 
-    return { appetite, horizon, avgTradeValue };
+    return { appetite, horizon };
   }, []);
 
   const handleStartAnalysis = async () => {
@@ -41,19 +42,20 @@ const AIAdvisor: React.FC = () => {
         - Thị trường hiện tại: VN-Index đang tăng nhẹ, nhóm Công nghệ (FPT) và Thép (HPG) đang có sóng mạnh.
         
         Hãy đưa ra 3 lời khuyên đầu tư cụ thể, ngắn gọn, chuyên nghiệp phong cách quỹ đầu tư. 
-        Xác định xem họ nên tập trung vào nhóm ngành nào tiếp theo.
+        Xác định xem họ nên tập trung vào nhóm ngành nào tiếp theo. Trả lời bằng tiếng Việt.
       `;
 
       const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
         contents: prompt,
         config: {
-          systemInstruction: "Bạn là chuyên gia cố vấn đầu tư cao cấp tại DAK.TNT. Trả lời bằng tiếng Việt, phân tích sắc sảo, dùng thuật ngữ tài chính chuẩn xác.",
+          systemInstruction: "Bạn là chuyên gia cố vấn đầu tư cao cấp tại DAK.TNT. Trả lời sắc sảo, dùng thuật ngữ tài chính chuẩn xác, bố cục rõ ràng.",
         }
       });
 
       setAiAnalysis(response.text || "Hệ thống AI đang bận xử lý, vui lòng thử lại sau.");
     } catch (error) {
+      console.error(error);
       setAiAnalysis("Không thể kết nối với trí tuệ nhân tạo. Vui lòng kiểm tra lại cấu hình API.");
     } finally {
       setIsAnalyzing(false);
@@ -142,7 +144,7 @@ const AIAdvisor: React.FC = () => {
                 <div className="h-4 bg-[#2b3139] rounded w-full"></div>
                 <div className="h-4 bg-[#2b3139] rounded w-5/6"></div>
                 <div className="h-20 bg-[#2b3139] rounded w-full"></div>
-                <p className="text-center text-[10px] text-[#f0b90b] font-bold uppercase tracking-widest mt-8">Đang đồng bộ hóa dữ liệu thị trường & lịch sử giao dịch...</p>
+                <p className="text-center text-[10px] text-[#f0b90b] font-bold uppercase tracking-widest mt-8">Đang đồng bộ hóa dữ liệu thị trường...</p>
               </div>
             ) : (
               <div className="prose prose-invert max-w-none">
@@ -169,7 +171,7 @@ const AIAdvisor: React.FC = () => {
                <i className="bi bi-lightning-fill text-[#f0b90b]"></i>
                Cổ phiếu AI gợi ý cho bạn
             </h3>
-            <span className="text-[10px] text-[#848e9c] font-bold uppercase">Cập nhật 1 phút trước</span>
+            <span className="text-[10px] text-[#848e9c] font-bold uppercase">Cập nhật theo thị trường</span>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left">
@@ -206,7 +208,12 @@ const AIAdvisor: React.FC = () => {
                     </td>
                     <td className="p-4 text-xs text-[#848e9c] max-w-[200px] truncate">{item.reason}</td>
                     <td className="p-4 text-right">
-                       <button className="px-3 py-1 bg-[#2b3139] border border-[#474d57] text-[10px] font-bold rounded-lg hover:border-[#f0b90b] transition-all">GIAO DỊCH</button>
+                       <button 
+                        onClick={() => onNavigate?.(MainView.TRADING)}
+                        className="px-3 py-1 bg-[#2b3139] border border-[#474d57] text-[10px] font-bold rounded-lg hover:border-[#f0b90b] transition-all"
+                       >
+                        GIAO DỊCH
+                       </button>
                     </td>
                   </tr>
                 ))}
@@ -235,16 +242,6 @@ const AIAdvisor: React.FC = () => {
                   </div>
                 ))}
              </div>
-          </div>
-
-          <div className="bg-gradient-to-br from-[#f0b90b]/20 to-transparent border border-[#f0b90b]/30 rounded-2xl p-6 shadow-lg relative overflow-hidden">
-             <div className="relative z-10">
-                <p className="text-[10px] text-[#f0b90b] font-black uppercase mb-2 tracking-widest italic">AI Prediction</p>
-                <p className="text-xs font-medium text-[#eaecef] leading-relaxed">
-                   "Dựa trên dòng tiền lớn, VN-Index có khả năng test lại mốc 1,280 trong tuần tới. Tăng tỷ trọng cổ phiếu Công nghệ ngay."
-                </p>
-             </div>
-             <i className="bi bi-graph-up-arrow absolute -right-4 -bottom-4 text-6xl text-[#f0b90b]/10 -rotate-12"></i>
           </div>
         </div>
       </div>

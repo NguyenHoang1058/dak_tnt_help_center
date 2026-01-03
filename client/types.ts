@@ -77,7 +77,7 @@ export interface FeedItem {
   id: string;
   title: string;
   summary: string;
-  category: 'Tin tức' | 'Phân tích' | 'AI Insight' | 'Hệ thống';
+  category: 'Tin tức' | 'Phân tích';
   author: string;
   time: string;
   reward: number;
@@ -99,7 +99,7 @@ export interface Mission {
 
 export interface WalletTransaction {
   time: string;
-  type: 'DEPOSIT' | 'WITHDRAW' | 'TRADE';
+  type: 'DEPOSIT' | 'WITHDRAW' | 'TRADE' | 'REWARD';
   note: string;
   amount: number;
   balanceAfter: number;
