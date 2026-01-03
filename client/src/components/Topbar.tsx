@@ -31,7 +31,6 @@ const Topbar: React.FC<TopbarProps> = ({ onHelpClick, onProfileClick, onLogout, 
 
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
-  // Xử lý đóng dropdown khi click ra ngoài
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {

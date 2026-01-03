@@ -1,16 +1,8 @@
 
 import React, { useState, useMemo } from 'react';
 import { GoogleGenAI } from '@google/genai';
-<<<<<<< HEAD:client/src/components/AIAdvisor.tsx
 import { TradeTransaction, MainView } from '../../types';
 import { COLORS } from '../../constants';
-=======
-import { TradeTransaction, MainView } from '../types';
-
-interface AIAdvisorProps {
-  onNavigate?: (view: MainView) => void;
-}
->>>>>>> 714e4f413d0b48b1fcd7c9784cdf84e8a15a8306:components/AIAdvisor.tsx
 
 interface AIAdvisorProps {
   onNavigate?: (view: MainView) => void;

@@ -1,8 +1,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { ICONS, COLORS } from '../../constants';
 import { GoogleGenAI } from '@google/genai';
 import ReactMarkdown from 'react-markdown';
+import { ICONS, COLORS } from '../../constants';
 
 interface Message {
   role: 'user' | 'model';

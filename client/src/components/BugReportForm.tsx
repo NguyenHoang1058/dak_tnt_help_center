@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ICONS, COLORS } from '../constants';
+import { ICONS, COLORS } from '../../constants';
 
 interface BugReportFormProps {
   onBack: () => void;

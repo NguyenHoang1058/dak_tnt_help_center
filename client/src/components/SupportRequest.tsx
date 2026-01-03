@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
-import { HelpView, Ticket } from '../types';
-import { ICONS, COLORS } from '../constants';
+import { HelpView, Ticket } from '../../types';
+import { ICONS, COLORS } from '../../constants';
 
 interface SupportRequestProps {
   onBack: () => void;

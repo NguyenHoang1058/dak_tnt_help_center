@@ -1,7 +1,7 @@
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { MainView } from '../../types';
-import { COLORS, ICONS } from '../../constants';
+import { COLORS } from '../../constants';
 import { PerformanceChart } from './PerformanceChart';
 
 const PORTFOLIO_KEY = 'dak_tnt_portfolio_v2';

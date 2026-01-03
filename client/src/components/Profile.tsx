@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { COLORS } from '../constants';
+import { COLORS } from '../../constants';
 
 const PROFILE_STORAGE_KEY = 'dak_tnt_profile_v1';
 

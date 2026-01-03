@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
-import { ICONS, COLORS } from '../../constants';
-import { FeedItem, Mission } from '../../types';
+import { ICONS, COLORS } from '../../../client/constants';
+import { FeedItem, Mission } from '../../../client/types';
 
 const Feed: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState('Tất cả');

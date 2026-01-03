@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
-import { HelpView, Article } from '../types';
-import { ICONS, COLORS } from '../constants';
+import { HelpView, Article } from '../../types';
+import { ICONS, COLORS } from '../../constants';
 
 interface FAQGuidesProps {
   onBack: () => void;
