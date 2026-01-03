@@ -1,7 +1,7 @@
 
 import React from 'react';
-import { COLORS } from '../../constants';
-import { MainView } from '../../types';
+import { COLORS } from '../constants';
+import { MainView } from '../types';
 
 interface SidebarProps {
   activeView: MainView;

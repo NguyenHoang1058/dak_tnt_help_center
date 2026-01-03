@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
-import { HelpView } from '../../types';
-import { ICONS, COLORS } from '../../constants';
+import { HelpView } from '../types';
+import { ICONS, COLORS } from '../constants';
 import BugReportForm from './BugReportForm';
 import SupportRequest from './SupportRequest';
 import FAQGuides from './FAQGuides';
