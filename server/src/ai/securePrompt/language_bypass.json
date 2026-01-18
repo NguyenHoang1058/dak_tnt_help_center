@@ -1,0 +1,10 @@
+{
+  "risk_id": "RS-01b",
+  "name": "Language Policy Bypass",
+  "patterns": [
+    "trả lời bằng tiếng anh",
+    "answer in english",
+    "use english",
+    "english only"
+  ]
+}

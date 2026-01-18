@@ -1,0 +1,15 @@
+{
+  "risk_id": "RS-01",
+  "name": "Prompt Injection / Jailbreak",
+  "patterns": [
+    "bỏ qua (toàn bộ )?(hướng dẫn|quy tắc|chỉ dẫn)",
+    "ignore (all|previous|system) (instructions|rules|prompts)",
+    "disregard (all|previous) instructions",
+    "override system",
+    "you are now",
+    "from now on you are",
+    "đóng vai",
+    "role\\s*play",
+    "jailbreak"
+  ]
+}

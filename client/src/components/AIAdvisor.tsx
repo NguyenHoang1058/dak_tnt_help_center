@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo } from 'react';
-import { GoogleGenAI } from '@google/genai';
+import { aiApi } from '../api/api';
 import { TradeTransaction, MainView } from '../../types';
 import { COLORS } from '../../constants';
 
@@ -33,27 +33,23 @@ const AIAdvisor: React.FC<AIAdvisorProps> = ({ onNavigate }) => {
   const handleStartAnalysis = async () => {
     setIsAnalyzing(true);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      const prompt = `
-        Dựa trên dữ liệu sau của nhà đầu tư:
-        - Khẩu vị: ${profileStats.appetite}
-        - Tầm nhìn: ${profileStats.horizon}
-        - Lịch sử gần nhất: ${MOCK_TRADES.map(t => `${t.type} ${t.symbol} giá ${t.price}`).join(', ')}
-        - Thị trường hiện tại: VN-Index đang tăng nhẹ, nhóm Công nghệ (FPT) và Thép (HPG) đang có sóng mạnh.
-        
-        Hãy đưa ra 3 lời khuyên đầu tư cụ thể, ngắn gọn, chuyên nghiệp phong cách quỹ đầu tư. 
-        Xác định xem họ nên tập trung vào nhóm ngành nào tiếp theo. Trả lời bằng tiếng Việt.
-      `;
+      const portfolioPayload = {
+        profile: {
+            appetite: profileStats.appetite,
+            horizon: profileStats.horizon
+        },
+        recentTrades: MOCK_TRADES.map(t => `${t.type} ${t.symbol} giá ${t.price}`),
+        marketContext: "VN-Index tăng nhẹ, Công nghệ (FPT) và Thép (HPG) đang sóng mạnh."
+      };
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: prompt,
-        config: {
-          systemInstruction: "Bạn là chuyên gia cố vấn đầu tư cao cấp tại DAK.TNT. Trả lời sắc sảo, dùng thuật ngữ tài chính chuẩn xác, bố cục rõ ràng.",
-        }
-      });
+      const res = await aiApi.getAdvice(portfolioPayload);
 
-      setAiAnalysis(response.text || "Hệ thống AI đang bận xử lý, vui lòng thử lại sau.");
+      if(res.data && res.data.success){
+        setAiAnalysis(res.data.data);
+      }else{
+        setAiAnalysis("Không nhận được phản hồi hợp lệ từ server.");
+    }
+
     } catch (error) {
       console.error(error);
       setAiAnalysis("Không thể kết nối với trí tuệ nhân tạo. Vui lòng kiểm tra lại cấu hình API.");

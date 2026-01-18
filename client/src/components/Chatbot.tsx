@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { GoogleGenAI } from '@google/genai';
+import { aiApi } from '../api/api';
 import ReactMarkdown from 'react-markdown';
 import { ICONS, COLORS } from '../../constants';
 
@@ -58,60 +58,27 @@ const Chatbot: React.FC<ChatbotProps> = ({ isOpen, onClose }) => {
     setIsLoading(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const chatHistory = messages.map(msg => ({
+        role: msg.role,
+        content: msg.text
+      }));
 
-      const systemPrompts = `
-          Bạn là trợ lý AI bị giới hạn chức năng cho hệ thống ĐẦU TƯ ẢO.
+      const res = await aiApi.chat(messageText, chatHistory);
 
-            TRƯỚC KHI TRẢ LỜI, BẮT BUỘC KIỂM TRA:
-            - Câu hỏi có yêu cầu khuyến nghị, so sánh, dự đoán, xác suất, thời điểm, lợi nhuận hay không?
-            - Câu hỏi có liên quan đến tài sản cụ thể, thị trường thật hay không?
-            
-            NẾU CÓ MỘT TRONG CÁC YẾU TỐ TRÊN → PHẢI TỪ CHỐI.
-            
-            CÁC NỘI DUNG BỊ CẤM TUYỆT ĐỐI:
-            - Mua / bán / nắm giữ tài sản cụ thể
-            - So sánh tài sản để chọn cái tốt hơn
-            - Dự đoán giá, xu hướng, xác suất tăng/giảm
-            - Đầu tư bằng tiền thật, thời điểm vào lệnh
-            - Trả lời trá hình dưới dạng ví dụ học thuật
-            
-            CHỈ ĐƯỢC PHÉP:
-            - Giải thích khái niệm đầu tư
-            - Minh họa ví dụ GIẢ ĐỊNH, KHÔNG gắn với tài sản cụ thể
-            - Nguyên tắc quản lý rủi ro cho người mới
-            
-            MẪU TỪ CHỐI DUY NHẤT (KHÔNG ĐƯỢC THAY ĐỔI):
-            "Xin lỗi, hệ thống này chỉ hỗ trợ kiến thức đầu tư ảo và giáo dục tài chính cơ bản."
-            
-            KHÔNG:
-            - Gợi ý thêm
-            - Nêu ý kiến cá nhân
-            - Thay đổi cách diễn đạt mẫu từ chối
-          `;
+      const replyText = res.data?.data || "Xin lỗi, không nhận được phản hồi từ server.";
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: messageText,
-        config: {
-          systemInstruction: systemPrompts,
-        }
-      });
-
-      const aiText = response.text || "Xin lỗi, mình gặp một chút trục trặc khi suy nghĩ. Bạn thử lại nhé!";
-      
       const aiMessage: Message = {
         role: 'model',
-        text: aiText,
+        text: replyText,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
 
       setMessages(prev => [...prev, aiMessage]);
     } catch (error) {
-      console.error('Gemini Chat error:', error);
+      console.error('AI Chat error:', error);
       setMessages(prev => [...prev, {
         role: 'model',
-        text: 'Có lỗi xảy ra khi kết nối với máy chủ AI. Vui lòng thử lại sau.',
+        text: 'Server AI local đang ngoại tuyến hoặc quá tải. Hãy kiểm tra terminal server.',
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }]);
     } finally {

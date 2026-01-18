@@ -1,0 +1,14 @@
+{
+  "risk_id": "RS-02",
+  "name": "PII / Sensitive Data",
+  "patterns": [
+    "\\b\\d{9,12}\\b",
+    "\\b0\\d{9}\\b",
+    "số tài khoản",
+    "account number",
+    "cvv",
+    "otp",
+    "mật khẩu",
+    "password"
+  ]
+}
